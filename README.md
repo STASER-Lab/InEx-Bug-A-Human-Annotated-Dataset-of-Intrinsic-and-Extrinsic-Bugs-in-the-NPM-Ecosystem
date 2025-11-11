@@ -9,17 +9,7 @@ The input CSV contains manually classified GitHub issues from 103 NPM repositori
 **Required fields for data collection:**
 - **`html_url`**: Full GitHub issue URL (e.g., `https://github.com/owner/repo/issues/123`)
 - **`FINAL Classification`**: Manually assigned label.  
-  Possible values (exact): `Intrinsic`, `Extrinsic`, `Not  a Bug`, `Unknown`  
-
-**Additional fields (for reference/documentation):**
-- **`package`**: Repository identifier in `owner_repo` format
-- **`issue_number`**: Issue number within the repository
-- **`title`**: Issue title text
-- **`body`**: Issue description text
-- **`Comments`**: Annotation notes from manual classification
-- **`Potential Reclassification`**: Alternative classification considerations
-
-*Note: Only `html_url` and `FINAL Classification` are strictly required for running `harvest_data.py`.*
+  Possible values (exact): `Intrinsic`, `Extrinsic`, `Not a Bug`, `Unknown`  
 
 ---
 
