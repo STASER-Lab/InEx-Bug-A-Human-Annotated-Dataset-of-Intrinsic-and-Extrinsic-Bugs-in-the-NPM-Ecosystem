@@ -270,7 +270,7 @@ python collect_data.py dataset.csv issues.jsonl
 **Run analysis:**
 
 ```bash
-python analyze_data.py
+python analyze.py
 ```
 
 **What it does:**
