@@ -1,14 +1,29 @@
+# Replication Package: GitHub Issue Bug Classification Study
+
 This README provides a comprehensive description of every variable in the dataset produced by `harvest_data.py`. All field names, structures, and computations match the actual contents of `issues_anonymized.jsonl`.
 
 ---
 
 ## 1. finalDataset.csv
 
-Each record in the input CSV must contain:
+The input CSV contains manually classified GitHub issues from 103 NPM repositories. Each record includes:
 
+**Required fields for data collection:**
 - **`html_url`**: Full GitHub issue URL (e.g., `https://github.com/owner/repo/issues/123`)
 - **`FINAL Classification`**: Manually assigned label.  
   Possible values (exact): `Intrinsic`, `Extrinsic`, `Not  a Bug`, `Unknown`  
+  *(Note: "Not  a Bug" contains two spaces)*
+
+**Additional fields (for reference/documentation):**
+- **`package`**: Repository identifier in `owner_repo` format
+- **`issue_number`**: Issue number within the repository
+- **`title`**: Issue title text
+- **`body`**: Issue description text
+- **`Comments`**: Annotation notes from manual classification
+- **`Potential Reclassification`**: Alternative classification considerations
+
+*Note: Only `html_url` and `FINAL Classification` are strictly required for running `harvest_data.py`.*
+
 ---
 
 ## 2. Output Dataset (JSONL)
@@ -286,6 +301,8 @@ python harvest_data.py finalDataset.csv issues.jsonl
 This script reads each issue URL from the CSV, queries the GitHub REST API, and enriches it with metadata, timeline events, comments, PRs, and commits.  
 It automatically handles API rate limits.
 
+**Closing PR/Commit Detection:** The script uses a multi-strategy approach to identify code changes that closed issues. It verifies that: (1) the code change occurred after issue creation, and (2) the merge/commit timestamp falls within 7 days of issue closure. This 7-day window accommodates workflows where maintainers manually close issues after verifying fixes or awaiting deployment cycles, while capturing legitimate code-based closures.
+
 #### Step 2 — Bot Detection
 
 ```bash
@@ -330,6 +347,24 @@ Generates descriptive statistics and publication-quality visualizations in the `
 ## 6. Notes on Anonymization
 
 The provided `issues_anonymized.jsonl` dataset has been anonymized to protect privacy:
+
+**What is anonymized:**
+- All `username` fields are replaced with SHA-256 hashes (e.g., "abc123...def456")
+- All user `id` fields are replaced with consistent anonymized integers
+- This applies to: issue authors, commenters, PR authors, reviewers, mergers, committers, assignees
+
+**What is NOT anonymized:**
+- Repository names (e.g., `prettier/prettier`) - these are public repositories
+- Issue URLs - these point to public GitHub issues
+- Issue titles and bodies - these are public GitHub content
+- Timestamps, labels, milestones - these are public metadata
+- Code change metrics - these are derived from public commits/PRs
+
+**Why `is_bot_close` was needed:**
+The `is_bot_close` field was computed using `bot_detect.py` before anonymization. After anonymization, it's impossible to identify bot accounts by username, so this boolean flag preserves that information. The `analysis.py` script automatically uses this field when available.
+
+**Anonymization consistency:**
+The same GitHub username always maps to the same anonymized hash across all issues, preserving the ability to track participation patterns while protecting identity.
 
 ---
 
