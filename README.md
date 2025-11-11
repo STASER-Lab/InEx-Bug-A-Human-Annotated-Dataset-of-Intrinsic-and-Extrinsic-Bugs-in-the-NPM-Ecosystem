@@ -11,7 +11,8 @@ This replication package contains all scripts and documentation needed to reprod
 ├── analyze_data.py                # Statistical analysis script
 ├── requirements.txt               # Python dependencies
 ├── FinalClassification.csv        # Your input dataset 
-├── issues_anonymized.jsonl        # Output of anonymized collected issue data 
+├── issues_anonymized.jsonl        # Output of anonymized collected issue data
+├── dataset_example.csv            # Example format of a dataset
 
 ```
 
