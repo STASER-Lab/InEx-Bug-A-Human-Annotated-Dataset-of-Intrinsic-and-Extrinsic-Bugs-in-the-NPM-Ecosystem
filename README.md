@@ -7,17 +7,12 @@ This replication package contains all scripts and documentation needed to reprod
 ```
 .
 ├── README.md                      # This file
-├── collect_data.py                # Data collection script
+├── harvest_data.py                # Data collection script
 ├── analyze_data.py                # Statistical analysis script
 ├── requirements.txt               # Python dependencies
-├── dataset.csv                    # Input dataset (ANONYMIZED)
-├── issues.jsonl                   # Collected issue data (generated)
-├── closed_by_summary.txt          # Closer statistics (generated)
-└── figures/                       # Analysis visualizations (generated)
-    ├── comprehensive_analysis.png
-    ├── sankey_flow.png
-    ├── repo_distribution.png
-    └── time_to_close.png
+├── FinalClassification.csv        # Your input dataset 
+├── issues.jsonl                   # Output collected issue data 
+
 ```
 
 ---
