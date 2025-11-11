@@ -951,7 +951,7 @@ def main():
     print("="*70)
     
     # Load data
-    df = load_data("issues_final.jsonl")
+    df = load_data("issues.jsonl")
     
     # Run all analyses
     analyze_bot_closures(df)
