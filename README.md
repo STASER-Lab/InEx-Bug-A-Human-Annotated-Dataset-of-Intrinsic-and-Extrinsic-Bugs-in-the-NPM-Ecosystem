@@ -312,12 +312,7 @@ The analysis script prints comprehensive statistics organized into sections:
 
 The dataset included in this replication package has been anonymized to protect privacy
 
-**Original Data Mapping:**
-The mapping between original and anonymized identifiers is maintained separately and is not included in this package.
-
-**Note:** The scripts work identically with both anonymized and non-anonymized data.
-
---
+---
 
 ## Citation
 
@@ -332,31 +327,4 @@ If you use this replication package in your research, please cite:
 }
 ```
 
----
 
-## License
-
-[Specify your license here]
-
----
-
-## Contact
-
-For questions about this replication package:
-- [Your contact information]
-
----
-
-## Acknowledgments
-
-This study uses the GitHub REST API and Timeline API for data collection. We thank GitHub for providing these APIs.
-
----
-
-## Version History
-
-- **v1.0** (2026-XX-XX): Initial release
-  - Data collection script
-  - Analysis script
-  - Complete documentation
-  - Anonymized dataset
