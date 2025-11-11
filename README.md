@@ -4,22 +4,13 @@ This README provides a comprehensive description of every variable in the datase
 
 ---
 
-## 1. Input Dataset (CSV)
+## 1. finalDataset.csv
 
 Each record in the input CSV must contain:
 
 - **`html_url`**: Full GitHub issue URL (e.g., `https://github.com/owner/repo/issues/123`)
 - **`FINAL Classification`**: Manually assigned label.  
   Possible values (exact): `Intrinsic`, `Extrinsic`, `Not  a Bug`, `Unknown`  
-  *(Note the two spaces in “Not  a Bug” — matches the dataset.)*
-
-Example:
-
-```csv
-html_url,FINAL Classification
-https://github.com/owner/repo/issues/1,Intrinsic
-```
-
 ---
 
 ## 2. Output Dataset (JSONL)
