@@ -368,10 +368,13 @@ The same GitHub username always maps to the same anonymized hash across all issu
 ## 7. Citation
 
 ```bibtex
-@inproceedings{yourstudy2026,
-  title={Your Study Title},
-  author={Your Names},
-  booktitle={Conference Name},
-  year={2026}
+@dataset{wright2025inexbug,
+  title        = {InEx-Bug: A Human Annotated Dataset of Intrinsic and Extrinsic Bugs in the NPM Ecosystem},
+  author       = {Wright, Tanner and Chen, Adams and Rodriguez-Perez, Gema},
+  year         = {2025},
+  publisher    = {STASER Lab},
+  address      = {Kelowna, British Columbia, Canada},
+  url          = {https://github.com/STASER-Lab/InEx-Bug-A-Human-Annotated-Dataset-of-Intrinsic-and-Extrinsic-Bugs-in-the-NPM-Ecosystem}, 
+  note         = {Version 1.0},
 }
 ```
