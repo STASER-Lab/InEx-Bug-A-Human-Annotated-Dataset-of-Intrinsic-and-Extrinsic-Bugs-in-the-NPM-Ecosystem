@@ -1,5 +1,3 @@
-# Replication Package: GitHub Issue Bug Classification Study
-
 This README provides a comprehensive description of every variable in the dataset produced by `harvest_data.py`. All field names, structures, and computations match the actual contents of `issues_anonymized.jsonl`.
 
 ---
