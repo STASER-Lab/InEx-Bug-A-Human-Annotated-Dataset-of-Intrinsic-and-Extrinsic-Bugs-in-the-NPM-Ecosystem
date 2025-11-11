@@ -281,7 +281,6 @@ It automatically handles API rate limits (sleep between 60–80 requests/min).
 ### Step 2 — Analysis
 
 ```bash
-cp issues_anonymized.jsonl issues_final.jsonl
 python analysis.py
 ```
 
