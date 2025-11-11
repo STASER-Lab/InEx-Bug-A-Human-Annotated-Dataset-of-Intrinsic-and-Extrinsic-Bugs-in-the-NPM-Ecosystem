@@ -10,7 +10,6 @@ The input CSV contains manually classified GitHub issues from 103 NPM repositori
 - **`html_url`**: Full GitHub issue URL (e.g., `https://github.com/owner/repo/issues/123`)
 - **`FINAL Classification`**: Manually assigned label.  
   Possible values (exact): `Intrinsic`, `Extrinsic`, `Not  a Bug`, `Unknown`  
-  *(Note: "Not  a Bug" contains two spaces)*
 
 **Additional fields (for reference/documentation):**
 - **`package`**: Repository identifier in `owner_repo` format
