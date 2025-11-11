@@ -11,6 +11,7 @@ Each record in the input CSV must contain:
 - **`html_url`**: Full GitHub issue URL (e.g., `https://github.com/owner/repo/issues/123`)
 - **`FINAL Classification`**: Manually assigned label.  
   Possible values (exact): `Intrinsic`, `Extrinsic`, `Not  a Bug`, `Unknown`  
+  *(Note: "Not  a Bug" contains two spaces)*
 ---
 
 ## 2. Output Dataset (JSONL)
@@ -36,7 +37,7 @@ Integer issue number within the repository.
 Unique GitHub issue ID (integer, stable across forks).
 
 #### `html_url`
-Direct link to the issue’s web page on GitHub.
+Direct link to the issue's web page on GitHub.
 
 #### `title`
 Issue title at creation time.
@@ -65,8 +66,9 @@ Total number of comments on the issue.
 Manual classification carried over from the input CSV.
 
 #### `is_bot_close`
-Boolean indicating if the issue was automatically closed by a bot (e.g., `stale[bot]`).  
-→ Detected by checking the `closed_by.username` for “bot” substrings.
+Boolean indicating if the issue was automatically closed by a known bot.  
+→ Specifically detects closures by `stale[bot]` or `vue-bot` (case-insensitive).  
+→ Added via `bot_detect.py` before anonymization to preserve bot detection capability.
 
 ---
 
@@ -74,8 +76,8 @@ Boolean indicating if the issue was automatically closed by a bot (e.g., `stale[
 
 Information about the user who created the issue.
 
-- **`username`**: GitHub username of the author.  
-- **`id`**: Numeric GitHub user ID.  
+- **`username`**: GitHub username of the author (anonymized in provided dataset).  
+- **`id`**: Numeric GitHub user ID (anonymized in provided dataset).  
 - **`author_association`**: Relationship to the repository — e.g., `"OWNER"`, `"MEMBER"`, `"CONTRIBUTOR"`, `"NONE"`.  
 → Extracted from the `user` object and `author_association` field in API responses.
 
@@ -85,8 +87,8 @@ Information about the user who created the issue.
 
 User who closed the issue, if applicable.
 
-- **`username`**: GitHub username of the closer.  
-- **`id`**: GitHub user ID.  
+- **`username`**: GitHub username of the closer (anonymized in provided dataset).  
+- **`id`**: GitHub user ID (anonymized in provided dataset).  
 → Null if issue is still open or was closed automatically.
 
 ---
@@ -110,11 +112,11 @@ Information about user participation and maintainer activity.
 - **`unique_commenters`**: Count of distinct commenters only.  
 - **`maintainer_participants`**: Count of participants with maintainer roles.  
 - **`has_maintainer_response`**: Boolean indicating whether at least one maintainer commented.  
-- **`participant_usernames`**: Array of all usernames that appeared in comments or authored the issue.  
-- **`commenter_usernames`**: Array of usernames who commented (excluding author).  
-- **`maintainer_usernames`**: Subset of participant usernames identified as maintainers.
+- **`participant_usernames`**: Array of all usernames that appeared in comments or authored the issue (anonymized in provided dataset).  
+- **`commenter_usernames`**: Array of usernames who commented (excluding author, anonymized in provided dataset).  
+- **`maintainer_usernames`**: Subset of participant usernames identified as maintainers (anonymized in provided dataset).
 
-→ These metrics are computed by parsing each comment’s `author_association` field.
+→ These metrics are computed by parsing each comment's `author_association` field.
 
 ---
 
@@ -122,7 +124,7 @@ Information about user participation and maintainer activity.
 
 Captures issue reopen behavior using timeline events.
 
-- **`was_reopened`**: True if any “reopened” event occurred.  
+- **`was_reopened`**: True if any "reopened" event occurred.  
 - **`reopen_count`**: Number of times reopened.  
 - **`time_to_reopen_seconds`**: Time between initial closure and first reopen event.  
 - **`final_resolution_time_seconds`**: Duration from first creation to final closure after all reopenings.  
@@ -151,9 +153,9 @@ Detected by matching cross-reference events between issues and PRs.
 - **`additions`, `deletions`, `total_changes`**: Lines added, removed, and total.  
 - **`approved_count`, `changes_requested_count`, `commented_count`**: Review outcome tallies.  
 - **`total_reviews`, `unique_reviewers`**: Aggregated review statistics.  
-- **`reviewer_usernames`**: List of reviewer usernames.  
-- **`author`**: PR author (object: `username`, `id`, `name`, `email`).  
-- **`merged_by`**: User who merged PR (same structure).
+- **`reviewer_usernames`**: List of reviewer usernames (anonymized in provided dataset).  
+- **`author`**: PR author (object: `username`, `id`, `name`, `email` - anonymized in provided dataset).  
+- **`merged_by`**: User who merged PR (same structure, anonymized in provided dataset).
 
 → Populated using `/pulls/{number}` endpoint and review/comment API calls.
 
@@ -167,7 +169,7 @@ If the issue was closed by a direct commit (no PR), this object stores commit da
 - **`html_url`**: Link to commit on GitHub.  
 - **`message`**: Commit message.  
 - **`additions`, `deletions`, `total_changes`, `files_changed`**: Code diff statistics.  
-- **`author`**, **`committer`**: Each contains `username`, `id`, `name`, `email` (may be null).
+- **`author`**, **`committer`**: Each contains `username`, `id`, `name`, `email` (may be null, anonymized in provided dataset).
 
 → Extracted from cross-reference timeline events with a linked commit SHA.
 
@@ -177,8 +179,8 @@ If the issue was closed by a direct commit (no PR), this object stores commit da
 
 Each object contains:
 
-- **`username`**: Assigned user’s GitHub handle.  
-- **`id`**: Numeric user ID.
+- **`username`**: Assigned user's GitHub handle (anonymized in provided dataset).  
+- **`id`**: Numeric user ID (anonymized in provided dataset).
 
 ---
 
@@ -210,7 +212,7 @@ List of all comments on the issue.
 Each comment object includes:
 - **`id`**: Comment ID.  
 - **`created_at`**, **`updated_at`**: Timestamps.  
-- **`author`**: Nested object with `username`, `id`, `author_association`.  
+- **`author`**: Nested object with `username`, `id`, `author_association` (username and id anonymized in provided dataset).  
 - **`body`**: Comment text (Markdown preserved).
 
 → Collected through the `/issues/comments` endpoint, batched by pagination.
@@ -232,12 +234,14 @@ Comment text here
 Another comment...
 ```
 
+*Note: Usernames in this field are anonymized in the provided dataset.*
+
 ---
 
 ## 3. Requirements
 
 - Python 3.8+  
-- GitHub personal access token with `repo` scope (read-only)
+- GitHub personal access token with `repo` scope (read-only) - *only needed if collecting new data*
 
 Install dependencies:
 
@@ -259,27 +263,85 @@ seaborn>=0.12.0
 
 ## 4. Usage
 
-### Step 1 — Data Collection
+### Option A: Using Provided Anonymized Dataset
 
-```bash
-export GITHUB_TOKEN="your_token_here"
-python harvest_data.py dataset.csv issues.jsonl
-```
-
-This script reads each issue URL, queries the GitHub REST API, and enriches it with metadata, timeline events, comments, PRs, and commits.  
-It automatically handles API rate limits (sleep between 60–80 requests/min).
-
-### Step 2 — Analysis
+If using the provided `issues_anonymized.jsonl` file:
 
 ```bash
 python analysis.py
 ```
 
-Generates descriptive statistics (not documented here).
+The provided dataset already includes the `is_bot_close` field and has all usernames/IDs anonymized.
 
 ---
 
-## 5. Citation
+### Option B: Collecting Fresh Data
+
+If collecting and processing new data from scratch:
+
+#### Step 1 — Data Collection
+
+```bash
+export GITHUB_TOKEN="your_token_here"
+python harvest_data.py finalDataset.csv issues.jsonl
+```
+
+This script reads each issue URL from the CSV, queries the GitHub REST API, and enriches it with metadata, timeline events, comments, PRs, and commits.  
+It automatically handles API rate limits.
+
+#### Step 2 — Bot Detection
+
+```bash
+python bot_detect.py issues.jsonl issues_with_bot_flag.jsonl
+```
+
+Adds the `is_bot_close` field to detect issues closed by `stale[bot]` or `vue-bot`.  
+**Important:** This step must be completed *before* anonymization to preserve bot detection capability.
+
+#### Step 3 — Anonymization (Optional)
+
+If you wish to anonymize usernames and user IDs for privacy:
+
+```bash
+python anonymize.py issues_with_bot_flag.jsonl issues_anonymized.jsonl
+```
+
+*Note: Anonymization script not included in this package as the provided dataset is already anonymized.*
+
+#### Step 4 — Analysis
+
+```bash
+python analysis.py
+```
+
+Generates descriptive statistics and publication-quality visualizations in the `figures/` directory.
+
+---
+
+## 5. Files Included
+
+- **`harvest_data.py`**: Main data collection script
+- **`bot_detect.py`**: Adds bot closure detection field
+- **`analysis.py`**: Generates statistics and visualizations
+- **`finalDataset.csv`**: Input CSV with manually classified issues
+- **`issues_anonymized.jsonl`**: Complete anonymized dataset (377 issues)
+- **`requirements.txt`**: Python dependencies
+- **`README.md`**: This file
+
+---
+
+## 6. Notes on Anonymization
+
+The provided `issues_anonymized.jsonl` dataset has been anonymized to protect privacy:
+
+- All `username` fields are replaced with SHA-256 hashes
+- All `id` fields (user IDs) are replaced with consistent anonymized integers
+- The `is_bot_close` field was computed before anonymization to preserve bot detection
+- The `analysis.py` script automatically uses `is_bot_close` when available, or falls back to username checking for non-anonymized data
+
+---
+
+## 7. Citation
 
 ```bibtex
 @inproceedings{yourstudy2026,
