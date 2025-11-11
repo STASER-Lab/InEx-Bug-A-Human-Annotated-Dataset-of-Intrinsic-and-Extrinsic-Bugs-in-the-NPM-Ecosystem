@@ -11,7 +11,6 @@ Each record in the input CSV must contain:
 - **`html_url`**: Full GitHub issue URL (e.g., `https://github.com/owner/repo/issues/123`)
 - **`FINAL Classification`**: Manually assigned label.  
   Possible values (exact): `Intrinsic`, `Extrinsic`, `Not  a Bug`, `Unknown`  
-  *(Note: "Not  a Bug" contains two spaces)*
 ---
 
 ## 2. Output Dataset (JSONL)
@@ -333,11 +332,6 @@ Generates descriptive statistics and publication-quality visualizations in the `
 ## 6. Notes on Anonymization
 
 The provided `issues_anonymized.jsonl` dataset has been anonymized to protect privacy:
-
-- All `username` fields are replaced with SHA-256 hashes
-- All `id` fields (user IDs) are replaced with consistent anonymized integers
-- The `is_bot_close` field was computed before anonymization to preserve bot detection
-- The `analysis.py` script automatically uses `is_bot_close` when available, or falls back to username checking for non-anonymized data
 
 ---
 
